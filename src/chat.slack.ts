@@ -9,7 +9,7 @@ import { type Chat } from "./chat";
 import { type serverConfig } from "./gateway.mcp.connection.store";
 import { trace } from "@opentelemetry/api";
 import { InMemoryOAuthClientProvider } from "./mcp.auth.client.ts";
-import { MCPClientConnection } from "./gateway.mcp.client.ts";
+import { MCPClientConnection } from "./gateway.mcp.connection.ts";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 import { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 
