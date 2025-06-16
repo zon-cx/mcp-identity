@@ -69,7 +69,7 @@ const messageBuilder = {
     authorizeMessage: (
         serverName: string,
         url: string,
-        value: string,
+        value?: string,
         text: string = "Authorize",
     ): {
         blocks: (KnownBlock | Block)[];
@@ -85,11 +85,11 @@ const messageBuilder = {
                             type: "button",
                             text: {
                                 type: "plain_text",
-                                text: text,
+                                text: text || "Authorize",
                             },
                             url: url,
                             action_id: "redirect",
-                            value: value,
+                            value: value || url,
                         },
                     ],
                 },
@@ -118,6 +118,36 @@ const messageBuilder = {
         };
     },
 
+    loginMessage: (
+        url: string,
+    ): (KnownBlock | Block)[] => {
+        return [
+            {type: "section", text: {type: "mrkdwn", text: "Welcome to MCP Chat :wave:"}},
+            {type: "divider"},
+            {
+                type: "section",
+                text: {
+                    type: "mrkdwn",
+                    text: "To get started, connect to an MCP server using the button below.",
+                },
+            },
+            {type: "divider"}, {
+                type: "actions",
+                elements: [{
+                    type: "button",
+                    text: {
+                        type: "plain_text",
+                        text: "Login with OAuth :lock:",
+                        emoji: true,
+                    },
+                    url: url.toString(),
+                    action_id: 'redirect',
+                    style: "primary",
+                }],
+            }
+        ];
+    },
+
     checkingServerToolMessage: (
         serverName: string,
     ): {
@@ -129,7 +159,38 @@ const messageBuilder = {
             text: " - " + serverName + ": Checking what tools are available...",
         };
     },
-
+    listTools: (
+        name: string,
+        tools:string[]
+    ): {
+        blocks: (KnownBlock | Block)[];
+        text?: string;
+    } => {
+    
+        
+        return {
+          blocks: [
+            {
+              type: "context",
+              elements: [
+                {
+                  type: "mrkdwn",
+                  text: tools.length 
+                    ? `🔍 *${name}*: ${tools.join(', ')}`
+                    : `🔍 *${name}*: No tools ❌`
+                },
+                // {
+                //   type: "mrkdwn",
+                //   text: toolEntries.length 
+                //     ? `🔍 *${name}*: ${toolEntries.map(t => JSON.stringify(t,null,2)).join('\n/n')} `
+                //     : `🔍 *${name}*: No tools ❌`
+                // }
+              ]
+            }
+          ],
+          text: `${name}: ${tools.length || 'No'} tools`
+        };
+    },
     listToolsMessage: (
         name: string,
         tools:Map<string, Tool>,
@@ -137,26 +198,31 @@ const messageBuilder = {
         blocks: (KnownBlock | Block)[];
         text?: string;
     } => {
-        const toolEntries= Array.from(tools.entries()).map(([name, tool]) => ({
-            name: name,
-            ...tool
+        const toolEntries = Array.from(tools.entries()).map(([name, tool]) => ({
+            name, ...tool
         }));
-        if (toolEntries.length === 0) {
-            return {
-                blocks: [messageBuilder.textSection(`- *${name}* - No tools available... ❌`)],
-                text: " - " + name + ": No tools available...",
-            };
-        }
+        
         return {
-            blocks: [
-                messageBuilder.textSection(`- *${name}*:`),
-                messageBuilder.textList(
-                    toolEntries.map((tool) => ({
-                        text: tool.name + " - " + tool.description,
-                    })),
-                ),
-            ],
-            text: " - " + name + ": " + toolEntries.length + " tools available",
+          blocks: [
+            {
+              type: "context",
+              elements: [
+                {
+                  type: "mrkdwn",
+                  text: toolEntries.length 
+                    ? `🔍 *${name}*: ${toolEntries.map(t => t.name).join(', ')}`
+                    : `🔍 *${name}*: No tools ❌`
+                },
+                // {
+                //   type: "mrkdwn",
+                //   text: toolEntries.length 
+                //     ? `🔍 *${name}*: ${toolEntries.map(t => JSON.stringify(t,null,2)).join('\n/n')} `
+                //     : `🔍 *${name}*: No tools ❌`
+                // }
+              ]
+            }
+          ],
+          text: `${name}: ${toolEntries.length || 'No'} tools`
         };
     },
 
