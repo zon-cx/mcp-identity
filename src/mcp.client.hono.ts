@@ -13,10 +13,9 @@ import {
   type ListResourceTemplatesResult,
 } from "@modelcontextprotocol/sdk/types.js";
 
-// The remote MCP registry server and auth token provided by the user.
-const MCP_URL = new URL("https://registry.cfapps.eu12.hana.ondemand.com/mcp");
-const AUTH_TOKEN =
-  "REDACTED";
+// Test against our local router instead of remote registry
+const MCP_URL = new URL("http://localhost:8080/mcp");
+const AUTH_TOKEN = process.env.AUTH_TOKEN || "test-token";
 
 // Helper to create a fresh client + transport for each request (simple approach).
 async function createClient() {
@@ -175,10 +174,38 @@ app.get("/resource-templates", async (c) => {
   }
 });
 
+app.post("/call-tool/:name", async (c) => {
+  const name = c.req.param("name");
+  const args = await c.req.json();
+  try {
+    const { client, transport } = await createClient();
+    const result = await client.callTool({ name, arguments: args });
+    await client.close();
+    await transport.close();
+    return c.json({ ok: true, result });
+  } catch (e: any) {
+    return c.json({ ok: false, error: e.message || String(e) }, 500);
+  }
+});
+
+app.post("/complete", async (c) => {
+  const body = await c.req.json();
+  try {
+    const { client, transport } = await createClient();
+    const result = await client.complete(body);
+    await client.close();
+    await transport.close();
+    return c.json({ ok: true, result });
+  } catch (e: any) {
+    return c.json({ ok: false, error: e.message || String(e) }, 500);
+  }
+});
+
 // Start the server only if this module is executed directly.
 if (import.meta.url === `file://${process.argv[1]}`) {
   const port = Number(process.env.PORT || 8787);
   console.log(`[MCP Hono Tester] Running on http://localhost:${port}`);
+  console.log(`[MCP Hono Tester] Testing against: ${MCP_URL}`);
   serve({ fetch: app.fetch, port });
 }
 
