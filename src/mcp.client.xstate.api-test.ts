@@ -5,8 +5,11 @@ import mcpClientMachine from "./mcp.client.xstate.js";
 import { AuthInfo } from "@modelcontextprotocol/sdk/server/auth/types.js";
 import type { Resource } from "@modelcontextprotocol/sdk/types.js";
 
-const MCP_URL = new URL("https://registry.cfapps.eu12.hana.ondemand.com/mcp");
-const AUTH_TOKEN =
+const testLocalRouter = false;
+const MCP_URL = testLocalRouter ? new URL("http://localhost:8080/mcp/4db27887f15847f9be1ccf92334dfbb3") : new URL("https://registry.cfapps.eu12.hana.ondemand.com/mcp/4db27887f15847f9be1ccf92334dfbb3");
+
+// Connect to local router instead of remote registry
+  const AUTH_TOKEN =
   "REDACTED";
 
 const authInfo: AuthInfo = {
@@ -20,7 +23,7 @@ const actor = createActor(mcpClientMachine, {
   input: {
     url: MCP_URL,
     options: {
-      info: { name: "hono-xstate-client", version: "1.0.0" },
+      info: { name: "router-test-client", version: "1.0.0" },
       auth: authInfo,
       session: "test",
     },

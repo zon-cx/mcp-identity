@@ -9,9 +9,6 @@ import { connectYjs } from "./store.yjs.js";
 
 dotenv.config();
 
-const REGISTRY_URL = process.env.MCP_REGISTRY_URL ?? "https://registry.cfapps.eu12.hana.ondemand.com/mcp";
-process.env.MCP_REGISTRY_URL = REGISTRY_URL;
-
 const AUTH_TOKEN =
   "REDACTED";
 
@@ -27,23 +24,12 @@ const id = "4db27887f15847f9be1ccf92334dfbb3";
 const doc = connectYjs("@mcp.registry");
 const store = doc.getMap<ServerConfig>("@mcp.server");
 
-const session = {
-  store,
-  auth: authInfo,
-};
-
 // Create and start the client manager actor
 const actor = createActor(clientManagerMachine, {
   id: id,
   input: {
-    session: {
-      store,
-      auth: authInfo,
-      session: "test",
-      id: id,
-      name: id,
-      version: "1.0.0"
-    },
+    auth: authInfo,
+    sessionId: id,
     store
   }
 });
@@ -111,7 +97,7 @@ app.post("/connect", async (c) => {
   const body = await c.req.json<ServerConfig>();
   const id = body.id ?? body.url; // simple id
   store.set(id, body);
-  actor.send({ type: "connect", ...body, session });
+  actor.send({ type: "connect", ...body, sessionId: id });
   return c.json({ ok: true });
 });
 
