@@ -22,9 +22,8 @@ import {
   OAuthClientProvider,
   UnauthorizedError,
 } from "@modelcontextprotocol/sdk/client/auth.js";
-import { connectYjs } from "@/store.yjs";
+import { connectYjs } from "./store.yjs";
 import * as Y from "yjs";
-import { randomFill, randomFillSync, randomUUID } from "node:crypto";
 import { createAtom } from "@xstate/store";
 import { jwtDecode } from "jwt-decode";
 import { AuthInfo } from "@modelcontextprotocol/sdk/server/auth/types.js";
