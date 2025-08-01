@@ -1,17 +1,11 @@
 {
   "name": "mcp-identity-monorepo",
-  "version": "0.0.2",
+  "version": "1.22.22",
   "description": "MCP Identity Gateway Monorepo",
   "private": true,
   "workspaces": [
-    "slack",
-    "web", 
-    "router",
-    "discovery",
-    "dashboard",
-    "whoami",
-    "inspector",
-    "shared",
+    "mcp-clients/*",
+    "mcp-servers/*",
     "mcp-client"
   ],
   "packageManager": "yarn@1.22.22",
@@ -21,7 +15,7 @@
     "test": "yarn workspaces run test",
     "deploy": "yarn workspaces run deploy",
     "start:slack": "yarn workspace slack start",
-    "start:web": "yarn workspace web start", 
+    "start:web": "yarn workspace web start",
     "start:router": "yarn workspace router start",
     "start:discovery": "yarn workspace discovery start",
     "start:dashboard": "yarn workspace dashboard start",
@@ -30,12 +24,20 @@
     "start:inspector": "DANGEROUSLY_OMIT_AUTH=true npx @modelcontextprotocol/inspector@latest"
   },
   "devDependencies": {
+    "@mcp-identity/mcp-client": "file:./mcp-client",
+    "@modelcontextprotocol/sdk": "^1.17.1",
     "@types/node": "^20.11.18",
+    "@xstate/store": "^3.8.4",
+    "pkgroll": "^2.15.0",
+    "tsx": "^4.19.4",
     "typescript": "^5",
-    "tsx": "^4.19.4"
+    "xstate": "^5.20.1"
   },
   "engines": {
     "yarn": ">=1.22.0",
     "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "@hocuspocus/provider": "^3.2.2"
   }
 }
