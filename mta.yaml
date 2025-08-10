@@ -1,0 +1,49 @@
+_schema-version: '3.1'
+ID: mcp-identity
+version: 1.0.0
+parameters:
+  enable-parallel-deployments: true
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm install  
+        - npm run build
+    
+    
+
+
+
+
+modules:
+  - name: gate
+    type: nodejs
+    path: mcp-servers/router
+    properties:
+      NODE_OPTIONS: --max-http-header-size=80000
+      NODE_ENV: development
+      LOG_SENSITIVE_CONNECTION_DATA: true
+      LOG_REMOTE_USER: true
+      LOG_REFERER: true
+      YJS_URL: 'wss://hp.cfapps.us10-001.hana.ondemand.com'
+      BASE_URL: ${default-url}
+      MCP_REGISTRY_URL: https://mcp-registry.cfapps.eu12.hana.ondemand.com/mcp
+
+    parameters:
+      memory: 256M
+      disk-quota: 512M
+      keep-existing-routes: true
+    build-parameters:
+      builder: npm
+      buildpacks:
+        - docker://docker.io/paketobuildpacks/nodejs
+      command: npm run build
+      ignore:
+        - 'default-*.json'
+        - .env
+        - '*node_modules*'
+        - package-lock.json
+    provides:
+      - name: mcp-gate
+        properties:
+          url: ${default-url}

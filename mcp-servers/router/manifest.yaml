@@ -10,7 +10,7 @@ applications:
     version: 0.0.2
     env:
       NODE_OPTIONS: --max-http-header-size=80000
-      NODE_ENV: production
+      NODE_ENV: development
       LOG_SENSITIVE_CONNECTION_DATA: true
       LOG_REMOTE_USER: true
       LOG_REFERER: true

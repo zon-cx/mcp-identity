@@ -21,22 +21,16 @@
     "sourceMap": true,
     "allowImportingTsExtensions": true,
     "paths": {
-      "@/*": [
-        "./src/*"
-      ],
-      "#cds-models/*": [
-        "./@cds-models/*"
+      "@mcp-client/sdk": ["./mcp-client"],
+      "@mcp-client/sdk/*": [
+        "./mcp-client/*"
       ]
     },
     "strictNullChecks": true,
     "noImplicitAny": false,
     "noEmitOnError": false
   },
-  "include": [
-    "src",
-    "tests",
-    "srv"
-  ],
+
   "exclude": [
     "node_modules",
     "dist",

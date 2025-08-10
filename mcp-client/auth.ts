@@ -1,33 +1,19 @@
 #!/usr/bin/env node
 
-import { createServer } from "node:http";
-import { createInterface } from "node:readline";
-import { resolve, URL } from "node:url";
-import { exec } from "node:child_process";
-import { Client } from "@modelcontextprotocol/sdk/client/index.js";
-import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
-import {
+ import {  URL } from "node:url";
+ import {
   OAuthClientInformation,
   OAuthClientInformationFull,
   OAuthClientMetadata,
   OAuthTokens,
 } from "@modelcontextprotocol/sdk/shared/auth.js";
-import {
-  CallToolRequest,
-  ListToolsRequest,
-  CallToolResultSchema,
-  ListToolsResultSchema,
-} from "@modelcontextprotocol/sdk/types.js";
-import {
+ import {
   OAuthClientProvider,
-  UnauthorizedError,
 } from "@modelcontextprotocol/sdk/client/auth.js";
-import { connectYjs } from "./store.yjs";
+import { connectYjs } from "./yjs";
 import * as Y from "yjs";
 import { createAtom } from "@xstate/store";
 import { jwtDecode } from "jwt-decode";
-import { AuthInfo } from "@modelcontextprotocol/sdk/server/auth/types.js";
-import { env } from "node:process";
 // Configuration
 
 const authState =  connectYjs("@mcp.oauth");
@@ -201,87 +187,6 @@ export class InMemoryOAuthClientProvider implements OAuthClientProvider {
       });
   }
 }
-
- 
-/*
- 
-export class BearerAuthProvider implements OAuthClientProvider {
-  constructor(private token: string) {}
-  
-  get redirectUrl(): string | globalThis.URL {
-    throw new Error("Method not implemented.");
-  }
-  get clientMetadata(): { redirect_uris: string[]; jwks_uri?: string | undefined; scope?: string | undefined; token_endpoint_auth_method?: string | undefined; grant_types?: string[] | undefined; response_types?: string[] | undefined; client_name?: string | undefined; client_uri?: string | undefined; logo_uri?: string | undefined; contacts?: string[] | undefined; tos_uri?: string | undefined; policy_uri?: string | undefined; jwks?: any; software_id?: string | undefined; software_version?: string | undefined; } {
-    throw new Error("Method not implemented.");
-  }
-  state?(): string | Promise<string> {
-    throw new Error("Method not implemented.");
-  }
-  clientInformation(): OAuthClientInformation | undefined | Promise<OAuthClientInformation | undefined> {
-    throw new Error("Method not implemented.");
-  }
-  saveClientInformation?(clientInformation: OAuthClientInformationFull): void | Promise<void> {
-    throw new Error("Method not implemented.");
-  }
-  tokens(): OAuthTokens | undefined | Promise<OAuthTokens | undefined> {
-    return {
-      access_token: this.token,
-      token_type: "Bearer",
-    };
-  }
-  saveTokens(tokens: OAuthTokens): void | Promise<void> {
-    throw new Error("Method not implemented.");
-  }
-  redirectToAuthorization(authorizationUrl: globalThis.URL): void | Promise<void> {
-    throw new Error("Method not implemented.");
-  }
-  saveCodeVerifier(codeVerifier: string): void | Promise<void> {
-    throw new Error("Method not implemented.");
-  }
-  codeVerifier(): string | Promise<string> {
-    throw new Error("Method not implemented.");
-  }
-}
-
-export class BasicAuthProvider implements OAuthClientProvider {
-  constructor(private clientId: string, private clientSecret: string) {}
-  
-  get redirectUrl(): string | globalThis.URL {
-    throw new Error("Method not implemented.");
-  }
-  get clientMetadata(): { redirect_uris: string[]; jwks_uri?: string | undefined; scope?: string | undefined; token_endpoint_auth_method?: string | undefined; grant_types?: string[] | undefined; response_types?: string[] | undefined; client_name?: string | undefined; client_uri?: string | undefined; logo_uri?: string | undefined; contacts?: string[] | undefined; tos_uri?: string | undefined; policy_uri?: string | undefined; jwks?: any; software_id?: string | undefined; software_version?: string | undefined; } {
-    throw new Error("Method not implemented.");
-  }
-  state?(): string | Promise<string> {
-    throw new Error("Method not implemented.");
-  }
-  clientInformation(): OAuthClientInformation | undefined | Promise<OAuthClientInformation | undefined> {
-    throw new Error("Method not implemented.");
-  }
-  saveClientInformation?(clientInformation: OAuthClientInformationFull): void | Promise<void> {
-    throw new Error("Method not implemented.");
-  }
-  tokens(): OAuthTokens | undefined | Promise<OAuthTokens | undefined> {
-    const credentials = Buffer.from(`${this.clientId}:${this.clientSecret}`).toString('base64');
-    return {
-      access_token: credentials,
-      token_type: "Basic",
-    };
-  }
-  saveTokens(tokens: OAuthTokens): void | Promise<void> {
-    throw new Error("Method not implemented.");
-  }
-  redirectToAuthorization(authorizationUrl: globalThis.URL): void | Promise<void> {
-    throw new Error("Method not implemented.");
-  }
-  saveCodeVerifier(codeVerifier: string): void | Promise<void> {
-    throw new Error("Method not implemented.");
-  }
-  codeVerifier(): string | Promise<string> {
-    throw new Error("Method not implemented.");
-  }
-}
-**/
 
 
  

@@ -12,7 +12,8 @@ import {
 } from "xstate";
 
 import * as Y from "yjs";
-import mcpClientMachine, { MCPClient } from "@mcp-identity/mcp-client";
+import mcpClientMachine, { MCPClient }  from  "@mcp-client/sdk"
+;
 import { env, version } from "node:process";
 import { AuthInfo } from "@modelcontextprotocol/sdk/server/auth/types.js";
 import { NamespacedDataStore } from "./router.mcp.client.namespace.js";

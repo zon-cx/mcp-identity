@@ -23,7 +23,8 @@ import {AuthInfo} from "@modelcontextprotocol/sdk/server/auth/types.js";
 import clientManagerMachine, {ServerConfig,} from "./router.mcp.client.manager";
 import {connectYjs} from "./store.yjs";
 import {NamespacedDataStore} from "./router.mcp.client.namespace";
-import {InMemoryOAuthClientProvider} from "@mcp-identity/mcp-client"; 
+import {InMemoryOAuthClientProvider}  from  "@mcp-client/sdk"
+; 
 const app = express();
 app.use(express.json());
 app.use(authRouter);

@@ -11,7 +11,7 @@ import { createActor, initialTransition, transition } from "xstate";
 import * as Y from "yjs";
 import { fromEventAsyncGenerator } from "@cxai/stream/xstate";
 import { yArrayIterator } from "@cxai/stream/yjs";
-import { connectYjs } from "./store.yjs";
+import { connectYjs } from "./yjs";
 
 const map = new Map<string, ReturnType<typeof createActorFromYjs>>();
 export const actorsStore = new Y.Doc({

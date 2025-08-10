@@ -8,10 +8,11 @@ import {
   spawnChild,
   fromPromise,
 } from "xstate";
-import{ fromMcpMessageHandler } from "./chat.handler.message.ts";
-import { Bootstrap, fromMcpBootstrap } from "./chat.handler.bootstrap.ts";
-import {Chat, Session, Tools} from "./chat.type";
-import { MCPClient } from "./mcp.client.ts";
+import{ fromMcpMessageHandler } from "./handler.message";
+import { Bootstrap, fromMcpBootstrap } from "./handler.bootstrap";
+import {Chat, Session, Tools} from "./types";
+import type { MCPClient }  from  "@mcp-client/sdk"
+;
 
 // type McpClient = ReturnType<typeof experimental_createMCPClient>;
 export function fromMcpSession(client:MCPClient) {
