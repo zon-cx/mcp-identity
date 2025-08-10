@@ -75,13 +75,6 @@ export const proxyProvider = new ProxyOAuthServerProvider({
       issuer: iss,
       scopes: ["openid", "profile", "email"],
       token, 
-        //When the token expires (in seconds since epoch).
-        //exp=>   expires_in
-        //          RECOMMENDED.  The lifetime in seconds of the access token.  For
-        //          example, the value "3600" denotes that the access token will
-        //          expire in one hour from the time the response was generated.
-        //          If omitted, the authorization server SHOULD provide the
-        //          expiration time via other means or document the default value.
       expiresAt: Date.now() + (exp || 1) * 1000,
       extra:userInfo,
       clientId: azp || "default-client",
@@ -105,11 +98,6 @@ export const proxyProvider = new ProxyOAuthServerProvider({
   },
 });
 
-// proxyProvider.authorize = async (client: OAuthClientInformationFull, params: AuthorizationParams, res: Response) => {
-//   console.log("authorize", client, params, res)
-//   params.scopes= params.scopes || ["openid", "profile", "email"]
-//   await proxyProvider.authorize(client, params, res)
-// }
 export const authRouter = mcpAuthRouter({
   provider: proxyProvider,
   issuerUrl: new URL(env.BASE_URL || "http://localhost:8090"),
@@ -134,10 +122,6 @@ protectedResourcesRouter.get("/.well-known/oauth-protected-resource/mcp", async 
 
     });
     await router(req, res, next);
-    //
-    // res.setHeader('Content-Type', 'application/json');
-    // res.json(config);
-    // console.log("openid-configuration response", res.statusCode, res.statusMessage);
     }
 );
 
@@ -149,21 +133,6 @@ export const requireAuth = requireBearerAuth({
   verifier: proxyProvider,
    requiredScopes: ["openid", "profile", "email"],
 });
-
-export function getAgentAuthInfo(
-  auth: AuthInfo,
-  id?: string
-): { id: string; name: string } & Partial<AuthInfo> {
-  id = id || (auth?.extra?.sub as string) ;
-  const name = (auth?.extra?.name as string) || id;
-
-  return {
-    id,
-    name,
-    ...auth,
-  };
-}
-
-
+ 
  
 
