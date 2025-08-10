@@ -7,27 +7,29 @@
   "scripts": {
     "build": "npx pkgroll --clear-dist --dist ./dist --shims --treeshake --target=node22.16.0 -y",
     "dev": "npx tsx src/index.ts",
-    "start": "node ./dist/index.cjs",
+    "start": "node ./dist/index.js",
     "test": "echo \"No tests specified\"",
     "deploy": "cf push"
   },
   "dependencies": {
-    "@mcp-identity/mcp-client": "file:../mcp-client",
-    "@modelcontextprotocol/sdk": "^1.15.1",
     "dotenv": "^16.5.0",
-    "hono": "^4.8.5",
-    "node-fetch": "^3.3.2",
-    "node-jose": "^2.2.0",
     "ws": "^8.18.3",
-    "xstate": "^5.19.2",
-    "yjs": "^13.6.26",
-    "zod": "^3.22.4"
+    "yjs": "^13.6.26", 
+    "@modelcontextprotocol/sdk": "^1.15.1",
+    "@hocuspocus/provider": "^3.2.2"
+
   },
   "devDependencies": {
-    "@hono/node-server": "^1.14.1",
-    "@types/node": "^20.11.18",
     "tsx": "^4.19.4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "@types/node": "^20.11.18",
+
+    "zod": "^3.22.4" ,
+    "@xstate/store": "*",
+    "xstate": "^5.19.2"
+    
+
+
   },
   "engines": {
     "node": "22.16.0"

@@ -1,8 +1,8 @@
 applications:
   - name: inspector
     routes:
-      - route: 'https://inspector.${DOMAIN}'
-      - route: 'https://inspector-proxy.${DOMAIN}'
+      - route: 'https://inspector.${default-domain}'
+      - route: 'https://inspector-server.${default-domain}'
         port: 8081
     command: npm run inspector
     stack: cflinuxfs4
@@ -16,13 +16,13 @@ applications:
       SERVER_PORT: 8081
       DANGEROUSLY_OMIT_AUTH: true
       HOST: '0.0.0.0'
-      MCP_PROXY_FULL_ADDRESS: 'https://inspector.${DOMAIN}'
+      MCP_PROXY_FULL_ADDRESS: 'https://inspector-server.${default-domain}'
     buildpacks:
       - https://github.com/cloudfoundry/nodejs-buildpack
 
   - name: inspector-server
     routes:
-      - route: 'https://inspector-server.${DOMAIN}'
+      - route: 'https://inspector-server.${default-domain}'
     command: npm run inspector
     readiness-health-check-type: none
     health-check-type: none

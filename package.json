@@ -8,12 +8,11 @@
     "mcp-servers/*",
     "mcp-client"
   ],
-  "packageManager": "yarn@1.22.22",
   "scripts": {
-    "build": "yarn workspaces run build",
+    "build": "npm run build --workspaces",
     "dev": "yarn workspaces run dev",
     "test": "yarn workspaces run test",
-    "deploy": "yarn workspaces run deploy",
+    "deploy": "mbt build  && cf deploy mta_archives/mcp-identity_1.0.0.mtar  --retries 1 -f",
     "start:slack": "yarn workspace slack start",
     "start:web": "yarn workspace web start",
     "start:router": "yarn workspace router start",
@@ -24,20 +23,19 @@
     "start:inspector": "DANGEROUSLY_OMIT_AUTH=true npx @modelcontextprotocol/inspector@latest"
   },
   "devDependencies": {
-    "@mcp-identity/mcp-client": "file:./mcp-client",
-    "@modelcontextprotocol/sdk": "^1.17.1",
     "@types/node": "^20.11.18",
-    "@xstate/store": "^3.8.4",
     "pkgroll": "^2.15.0",
     "tsx": "^4.19.4",
-    "typescript": "^5",
-    "xstate": "^5.20.1"
+    "typescript": "^5"
   },
   "engines": {
     "yarn": ">=1.22.0",
-    "node": ">=18.0.0"
+    "node": ">=22.16.0",
+    "npm": ">=10.9.2"
   },
   "dependencies": {
-    "@hocuspocus/provider": "^3.2.2"
+    "@hocuspocus/provider": "^3.2.2",
+    "@xstate/store": "^3.8.4",
+    
   }
 }

@@ -1,7 +1,7 @@
 import { OAuthClientMetadata, OAuthTokens, OAuthTokensSchema } from "@modelcontextprotocol/sdk/shared/auth.js";
 import { z } from "zod";
 import { connectYjs } from "./yjs";
-import { InMemoryOAuthClientProvider } from "@mcp-identity/mcp-client";
+import { InMemoryOAuthClientProvider } from "@mcp-client/sdk"; 
 import { ServerConfig } from "./router.mcp.client.manager";
 import { env } from "node:process";
 import * as Y from "yjs";
@@ -55,6 +55,7 @@ export class RemoteOAuthClientProvider extends InMemoryOAuthClientProvider {
   clientMetadata?: OAuthClientMetadata,
   public configStore: Y.Map<ServerConfig> = registryState.getMap<ServerConfig>(agent),
   public sessionStore: Y.Map<any> = authState.getMap<any>(sessionId), 
+  
   ){  
     redirectUrl = redirectUrl || CALLBACK_URL
     super(redirectUrl, clientMetadata || {

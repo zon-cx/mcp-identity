@@ -1,5 +1,5 @@
 import {z} from "zod";
-import {agentConfig, mcpAgentManager, serverConfig} from "@/registry.identity.store";
+import {agentConfig, mcpAgentManager, serverConfig} from "./registry.identity.store";
 import {randomUUID} from "node:crypto";
 import {env} from "node:process";
 import { ProxyOAuthServerProvider } from "@modelcontextprotocol/sdk/server/auth/providers/proxyProvider.js";
@@ -11,7 +11,7 @@ import { RequestHandlerExtra } from "@modelcontextprotocol/sdk/shared/protocol.j
 import { InMemoryEventStore } from "@modelcontextprotocol/sdk/examples/shared/inMemoryEventStore.js";
 import { version } from "node:os";
 import { CallToolResultSchema } from "@modelcontextprotocol/sdk/types.js";
-import {authRouter, requireAuth, getAgentAuthInfo, protectedResourcesRouter} from "./registry.mcp.server.auth";
+import {authRouter, requireAuth, getAgentAuthInfo, protectedResourcesRouter} from "./router.mcp.server.auth";
 import { AuthInfo } from "@modelcontextprotocol/sdk/server/auth/types.js";
 import { connectYjs } from "./store.yjs";
 import { ResourceTemplate } from "@modelcontextprotocol/sdk/server/mcp.js";

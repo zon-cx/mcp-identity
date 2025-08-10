@@ -20,7 +20,8 @@
     "ws": "^8.18.3",
     "xstate": "^5.19.2",
     "yjs": "^13.6.26",
-    "zod": "^3.22.4"
+    "zod": "^3.22.4",
+    "express": "^5.1.0"
   },
   "devDependencies": {
     "@hono/node-server": "^1.14.1",

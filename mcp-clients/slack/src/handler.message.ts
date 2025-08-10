@@ -1,10 +1,10 @@
 import { fromEventAsyncGenerator } from "@cxai/stream";
 import { generateText } from "ai";
 import { azure } from "@ai-sdk/azure";
-import { Chat  } from "./chat.type";
-import { Session ,Tools} from "./chat.handler.thread";
-import { aiTools } from "./chat.handler.tools";
-import { MCPClient } from "./mcp.client";
+import {Chat, Session, Tools} from "./types";
+import { aiTools } from "./handler.tools";
+import type { MCPClient }  from  "@mcp-client/sdk"
+;
 
 /**
  * Extend the generic MessageInput with an optional prompt field.

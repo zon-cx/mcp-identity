@@ -1,17 +1,16 @@
 import {env} from "node:process";
 import slack from "@slack/bolt";
 import {ActorRef, ActorRefFromLogic, createActor, waitFor} from "xstate";
-import {fromMcpSession} from "./chat.handler.thread.ts";
-import yjsActor from "./chat.store.ts";
-import {AllAssistantMiddlewareArgs} from "@slack/bolt/dist/Assistant";
-import messages from "./chat.ui.slack.messages.ts";
-import {Session, Tools} from "./chat.type";
-import {type serverConfig} from "./registry.identity.store.ts";
+import {fromMcpSession} from "./handler.thread";
+import yjsActor from "./store";
+import {AllAssistantMiddlewareArgs} from "@slack/bolt/sssistant";
+import messages from "./messages";
+import {Session, Tools} from "./types";
 import {trace} from "@opentelemetry/api";
-import {InMemoryOAuthClientProvider} from "./mcp.client.auth.ts";
-import {StreamableHTTPClientTransport} from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 import {CallToolResult} from "@modelcontextprotocol/sdk/types.js";
-import mcpClientMachine from "./mcp.client.ts";
+import mcpClientMachine, {InMemoryOAuthClientProvider}  from  "@mcp-client/sdk"
+;
+import {ServerConfig} from "./types";
 
 const { App, LogLevel } = slack;
 const { Assistant } = slack;
@@ -587,7 +586,7 @@ async function publishHome({
   }
 
   function buildServerBlocks(
-    connections: Array<serverConfig & { status: string }>,
+    connections: Array<ServerConfig & { status: string }>,
     {
       id,
       name,
