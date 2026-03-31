@@ -5,7 +5,7 @@
   "main": "./dist/index.js",
   "scripts": {
     "build": "npx pkgroll --clear-dist --dist ./dist ",
-    "dev": "PORT=8090 BASE_URL=http://localhost:8090 tsx --env-file=.env.local src/index.ts",
+    "dev": "PORT=8091 BASE_URL=http://localhost:8091 tsx --env-file=../../.env.local src/index.ts",
     "start": "node ./dist/index.cjs",
     "test": "echo \"No tests specified\"",
     "deploy": "cf push"
@@ -13,7 +13,8 @@
   "dependencies": {
     "yjs": "^13.6.26",
     "@hocuspocus/provider": "^3.2.2",
-    "@modelcontextprotocol/sdk": "^1.17.1"
+    "@modelcontextprotocol/sdk": "^1.17.1",
+    "@mcp-client/sdk": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^20.11.18",
