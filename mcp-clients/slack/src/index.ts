@@ -1,9 +1,9 @@
 import {env} from "node:process";
-import slack from "@slack/bolt";
+import * as slack from "@slack/bolt";
 import {ActorRef, ActorRefFromLogic, createActor, waitFor} from "xstate";
 import {fromMcpSession} from "./handler.thread";
 import yjsActor from "./store";
-import {AllAssistantMiddlewareArgs} from "@slack/bolt/sssistant";
+import type { AllAssistantMiddlewareArgs } from "@slack/bolt";
 import messages from "./messages";
 import {Session, Tools} from "./types";
 import {trace} from "@opentelemetry/api";
@@ -12,8 +12,7 @@ import mcpClientMachine, {InMemoryOAuthClientProvider}  from  "@mcp-client/sdk"
 ;
 import {ServerConfig} from "./types";
 
-const { App, LogLevel } = slack;
-const { Assistant } = slack;
+const { App, LogLevel, Assistant } = slack;
 const tracer = trace.getTracer("console-tracer");
 const log =
   (logger: slack.Logger) =>

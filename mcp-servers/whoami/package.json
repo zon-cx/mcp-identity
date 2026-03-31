@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "npx pkgroll --clear-dist --dist ./dist --shims --treeshake --target=node22.16.0 -y",
-    "dev": "tsx --env-file=.env src/index.ts",
+    "dev": "tsx --env-file=../../.env src/index.ts",
     "start": "node ./dist/index.cjs",
     "test": "echo \"No tests specified\"",
     "deploy": "cf push"

@@ -6,20 +6,20 @@
   "workspaces": [
     "mcp-clients/*",
     "mcp-servers/*",
-    "mcp-client"
+    "packages/*"
   ],
   "scripts": {
-    "build": "npm run build --workspaces",
-    "dev": "yarn workspaces run dev",
-    "test": "yarn workspaces run test",
+    "build": "pnpm -r build",
+    "dev": "pnpm -r --parallel --filter \"!@mcp-identity/web\" --filter \"!@mcp-identity/dashboard\" --filter \"!@mcp-identity/discovery\" dev",
+    "test": "pnpm -r test",
     "deploy": "mbt build  && cf deploy mta_archives/mcp-identity_1.0.0.mtar  --retries 1 -f",
-    "start:slack": "yarn workspace slack start",
-    "start:web": "yarn workspace web start",
-    "start:router": "yarn workspace router start",
-    "start:discovery": "yarn workspace discovery start",
-    "start:dashboard": "yarn workspace dashboard start",
-    "start:whoami": "yarn workspace whoami start",
-    "dev:router": "PORT=8090 BASE_URL=http://localhost:8090 yarn workspace @mcp-identity/router dev",
+    "start:slack": "pnpm --filter slack start",
+    "start:web": "pnpm --filter web start",
+    "start:router": "pnpm --filter router start",
+    "start:discovery": "pnpm --filter discovery start",
+    "start:dashboard": "pnpm --filter dashboard start",
+    "start:whoami": "pnpm --filter whoami start",
+    "dev:router": "PORT=8090 BASE_URL=http://localhost:8090 pnpm --filter @mcp-identity/router dev",
     "start:inspector": "DANGEROUSLY_OMIT_AUTH=true npx @modelcontextprotocol/inspector@latest"
   },
   "devDependencies": {
@@ -35,7 +35,6 @@
   },
   "dependencies": {
     "@hocuspocus/provider": "^3.2.2",
-    "@xstate/store": "^3.8.4",
-    
+    "@xstate/store": "^3.8.4"
   }
 }
