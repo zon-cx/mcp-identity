@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "npx pkgroll --clear-dist --dist ./dist --shims --treeshake --target=node22.16.0 -y",
-    "dev": "npx tsx src/index.ts",
+    "dev": "tsx src/index.ts",
     "start": "node ./dist/index.js",
     "test": "echo \"No tests specified\"",
     "deploy": "cf push"
@@ -16,7 +16,8 @@
     "ws": "^8.18.3",
     "yjs": "^13.6.26", 
     "@modelcontextprotocol/sdk": "^1.15.1",
-    "@hocuspocus/provider": "^3.2.2"
+    "@hocuspocus/provider": "^3.2.2",
+    "@mcp-client/sdk": "workspace:*"
 
   },
   "devDependencies": {
