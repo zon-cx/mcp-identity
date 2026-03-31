@@ -251,6 +251,9 @@ importers:
       '@hocuspocus/provider':
         specifier: ^3.2.2
         version: 3.4.4(y-protocols@1.0.7(yjs@13.6.30))(yjs@13.6.30)
+      '@mcp-client/sdk':
+        specifier: workspace:*
+        version: link:../../packages/mcp-client
       '@modelcontextprotocol/sdk':
         specifier: ^1.15.1
         version: 1.29.0(zod@3.25.76)
