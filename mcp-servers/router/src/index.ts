@@ -27,8 +27,68 @@ import {InMemoryOAuthClientProvider}  from  "@mcp-client/sdk"
 ; 
 const app = express();
 app.use(express.json());
-app.use(authRouter);
-app.use(protectedResourcesRouter);
+const OMIT_AUTH = env.DANGEROUSLY_OMIT_AUTH !== "false";
+
+if (!OMIT_AUTH) {
+  app.use(authRouter);
+  app.use(protectedResourcesRouter);
+}
+
+const devAuth = (): AuthInfo => ({
+  token: "dev-token",
+  clientId: "dev-client",
+  scopes: ["openid", "profile", "email"],
+  expiresAt: Date.now() + 24 * 60 * 60 * 1000,
+  extra: {
+    sub: `dev-${randomUUID()}`,
+    name: "Dev User",
+    email: "dev@local",
+  },
+});
+
+const authFor = (req: express.Request): AuthInfo =>
+  OMIT_AUTH ? devAuth() : (req.auth as AuthInfo);
+
+// Normalize thrown Response objects into RFC6749-style JSON errors.
+app.use((err: any, _req: express.Request, res: express.Response, next: express.NextFunction) => {
+  if (res.headersSent) {
+    return next(err);
+  }
+
+  if (err instanceof Response) {
+    const status = err.status || 500;
+    err
+      .text()
+      .then((body) => {
+        try {
+          const parsed = body ? JSON.parse(body) : undefined;
+          if (parsed && typeof parsed === "object") {
+            return res.status(status).json(parsed);
+          }
+        } catch {
+          // Fall through to normalized JSON payload.
+        }
+
+        return res.status(status).json({
+          error: "server_error",
+          error_description: body || err.statusText || "Unhandled Response error",
+        });
+      })
+      .catch(() =>
+        res.status(status).json({
+          error: "server_error",
+          error_description: err.statusText || "Unhandled Response error",
+        })
+      );
+    return;
+  }
+
+  const description = err instanceof Error ? err.message : String(err);
+  return res.status(500).json({
+    error: "server_error",
+    error_description: description,
+  });
+});
 
 const doc = connectYjs("@mcp.registry");
 const clientManagers = {} as Record<string, any>;
@@ -334,14 +394,14 @@ app.all("/mcp/:id", async (req, res) => {
     })
      await connectSession(
       sessionId,
-      { auth: req.auth as AuthInfo, id },
+      { auth: authFor(req), id },
          transport
     );
   }
   await transport.handleRequest(req, res, req.body);
 });
 
-app.all("/mcp", requireAuth, async (req, res) => {
+app.all("/mcp", OMIT_AUTH ? (_req, _res, next) => next() : requireAuth, async (req, res) => {
   const session = req.header("mcp-session-id") as string | undefined;
   let transport: StreamableHTTPServerTransport;
 
@@ -358,21 +418,21 @@ app.all("/mcp", requireAuth, async (req, res) => {
      }); 
      await connectSession(
       sessionId,
-      { auth: req.auth as AuthInfo, id: req.params.id },
+      { auth: authFor(req), id: req.params.id },
       transport
     );
   }
   await transport.handleRequest(req, res, req.body);
 });
 
-app.get("/sse",requireAuth, async (req, res) => {
+app.get("/sse", OMIT_AUTH ? (_req, _res, next) => next() : requireAuth, async (req, res) => {
   // Create SSE transport for legacy clients
   const transport = new SSEServerTransport("/messages", res);
   transports.sse[transport.sessionId] = transport;
 
   await connectSession(
     transport.sessionId,
-    { auth: req.auth as AuthInfo, id: req.params.id },
+    { auth: authFor(req), id: req.params.id },
     transport
   );
 });
@@ -382,11 +442,11 @@ app.get("/sse/:id", async (req, res) => {
 
   await connectSession(
     transport.sessionId,
-    { auth: req.auth as AuthInfo, id: req.params.id },
+    { auth: authFor(req), id: req.params.id },
     transport
   );
 });
-app.post("/messages/:id", requireAuth, async (req, res) => {
+app.post("/messages/:id", OMIT_AUTH ? (_req, _res, next) => next() : requireAuth, async (req, res) => {
   const sessionId = req.query.sessionId as string;
   const transport = transports.sse[sessionId];
   if (transport) {
@@ -396,7 +456,7 @@ app.post("/messages/:id", requireAuth, async (req, res) => {
   }
 });
 // Legacy message endpoint for older clients
-app.post("/messages", requireAuth, async (req, res) => {
+app.post("/messages", OMIT_AUTH ? (_req, _res, next) => next() : requireAuth, async (req, res) => {
   const sessionId = req.query.sessionId as string;
   const transport = transports.sse[sessionId];
   if (transport) {
