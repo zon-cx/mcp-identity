@@ -11,7 +11,6 @@ import { RequestHandlerExtra } from "@modelcontextprotocol/sdk/shared/protocol.j
 import { InMemoryEventStore } from "@modelcontextprotocol/sdk/examples/shared/inMemoryEventStore.js";
 import { version } from "node:os";
 import { CallToolResultSchema } from "@modelcontextprotocol/sdk/types.js";
-import {authRouter, requireAuth, getAgentAuthInfo, protectedResourcesRouter} from "./router.mcp.server.auth";
 import { AuthInfo } from "@modelcontextprotocol/sdk/server/auth/types.js";
 import { connectYjs } from "./store.yjs";
 import { ResourceTemplate } from "@modelcontextprotocol/sdk/server/mcp.js";
@@ -534,9 +533,20 @@ async function connectSession(sessionId: string, {session, auth, id}: {
  
 
 const app = express();
-app.use(express.json()); 
-app.use(authRouter);
-app.use(protectedResourcesRouter);
+app.use(express.json());
+
+const localAuth = (req: express.Request): AuthInfo => ({
+  token: "local",
+  clientId: "local",
+  scopes: [],
+  expiresAt: Date.now() + 24 * 60 * 60 * 1000,
+  extra: {
+    sub:
+      (req.header("x-mcp-user") as string | undefined) ||
+      (req.header("x-user-id") as string | undefined) ||
+      `local-${randomUUID()}`,
+  },
+});
 
 // Add error handling middleware
 app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -603,7 +613,7 @@ app.use(async (req, res, next) => {
 //     }
 // }
 // , injectAnonymousAuth({})
-app.all("/mcp/:id", requireAuth,async (req, res) => {
+app.all("/mcp/:id", async (req, res) => {
     const id = req.params.id;
     const session = req.header("mcp-session-id") as string | undefined;
     let transport: StreamableHTTPServerTransport;
@@ -621,7 +631,7 @@ app.all("/mcp/:id", requireAuth,async (req, res) => {
         })
         await connectSession(
             sessionId,
-            { auth: req.auth as AuthInfo, id },
+            { auth: localAuth(req), id },
             transport,
             mcpServer
         );
@@ -647,7 +657,7 @@ app.all("/mcp/:id/readonly", async (req, res) => {
         })
         await connectSession(
             sessionId,
-            { auth: req.auth as AuthInfo, id },
+            { auth: localAuth(req), id },
             transport,
             mcpResourceServer
         );
@@ -655,7 +665,7 @@ app.all("/mcp/:id/readonly", async (req, res) => {
     await transport.handleRequest(req, res, req.body);
 });
 
-app.all("/mcp", requireAuth, async (req, res) => {
+app.all("/mcp", async (req, res) => {
     const session = req.header("mcp-session-id") as string | undefined;
     let transport: StreamableHTTPServerTransport;
 
@@ -672,7 +682,7 @@ app.all("/mcp", requireAuth, async (req, res) => {
         });
         await connectSession(
             sessionId,
-            { auth: req.auth as AuthInfo, id: req.params.id },
+            { auth: localAuth(req), id: req.params.id },
             transport,
             mcpServer
         );
